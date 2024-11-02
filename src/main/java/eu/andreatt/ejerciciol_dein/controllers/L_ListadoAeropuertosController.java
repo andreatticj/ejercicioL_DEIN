@@ -1,22 +1,17 @@
 package eu.andreatt.ejerciciol_dein.controllers;
 
-import eu.andreatt.ejerciciol_dein.application.L_AddAeropuerto;
-import eu.andreatt.ejerciciol_dein.application.L_AddAvion;
-import eu.andreatt.ejerciciol_dein.application.L_BorrarAvion;
+import eu.andreatt.ejerciciol_dein.application.*;
 import eu.andreatt.ejerciciol_dein.dao.*;
+import eu.andreatt.ejerciciol_dein.model.Aviones;
 import eu.andreatt.ejerciciol_dein.model.InformacionAeropuertosPrivados;
 import eu.andreatt.ejerciciol_dein.model.InformacionAeropuertosPublicos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class L_ListadoAeropuertosController {
@@ -134,7 +129,7 @@ public class L_ListadoAeropuertosController {
 
     @FXML
     void actDesAviones(ActionEvent event) {
-        // Acción para activar/desactivar aviones
+        new L_ActivarDesactivarAvion();
     }
 
     /** EVENTO - AL PULSAR PRIVADOS */
@@ -154,7 +149,6 @@ public class L_ListadoAeropuertosController {
     @FXML
     void aniadirAeropuerto(ActionEvent event) {
         new L_AddAeropuerto();
-
     }
 
     @FXML
@@ -164,7 +158,60 @@ public class L_ListadoAeropuertosController {
 
     @FXML
     void borrarAeropuerto(ActionEvent event) {
+        //Verificar si se seleccionó una fila en la tabla de aeropuertos privados
+        InformacionAeropuertosPrivados aeropuertoPrivadoSeleccionado = tvAeropuertosPrivados.getSelectionModel().getSelectedItem();
 
+        // Verificar si se seleccionó una fila en la tabla de aeropuertos públicos
+        InformacionAeropuertosPublicos aeropuertoPublicoSeleccionado = tvAeropuertosPublicos.getSelectionModel().getSelectedItem();
+
+        //Validar que se ha seleccionado un aeropuerto
+        if(aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
+            Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún aeropuerto", "ERROR");
+            alerta.show();
+        }else{
+            //Solicitar confirmación
+            Alert a = generarVentana(Alert.AlertType.CONFIRMATION, "¿Desea BORRAR el aeropuerto?", "CONFIRMACIÓN");
+            a.showAndWait();
+
+            //Borrar aeropuerto en confirmación
+            if(a.getResult().getButtonData().toString().equals("OK_DONE")) {
+                if (aeropuertoPrivadoSeleccionado != null) {
+                    String pais = aeropuertoPrivadoSeleccionado.getPais();
+                    String ciudad = aeropuertoPrivadoSeleccionado.getCiudad();
+                    String calle = aeropuertoPrivadoSeleccionado.getCalle();
+                    int numero = aeropuertoPrivadoSeleccionado.getNumero();
+                    int direccion = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
+                    int id = aeropuertoPrivadoSeleccionado.getId();
+                    String nombre = aeropuertoPrivadoSeleccionado.getNombre();
+                    int anioInauguracion = aeropuertoPrivadoSeleccionado.getAnioInauguracion();
+                    int capacidad = aeropuertoPrivadoSeleccionado.getCapacidad();
+
+                    aeropuertosPrivadosDao.borrarAeropuertoPrivado(id);
+                    aeropuertosDao.borrarAeropuerto(nombre, anioInauguracion, capacidad, direccion);
+
+                } else{
+                    String pais = aeropuertoPublicoSeleccionado.getPais();
+                    String ciudad = aeropuertoPublicoSeleccionado.getCiudad();
+                    String calle = aeropuertoPublicoSeleccionado.getCalle();
+                    int numero = aeropuertoPublicoSeleccionado.getNumero();
+                    int direccion = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
+                    int id = aeropuertoPublicoSeleccionado.getId();
+                    String nombre = aeropuertoPublicoSeleccionado.getNombre();
+                    int anioInauguracion = aeropuertoPublicoSeleccionado.getAnioInauguracion();
+                    int capacidad = aeropuertoPublicoSeleccionado.getCapacidad();
+
+                    aeropuertosPublicosDao.borrarAeropuertoPublico(id);
+                    aeropuertosDao.borrarAeropuerto(nombre, anioInauguracion, capacidad, direccion);
+                }
+
+                //Mensaje de alerta
+                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha BORRADO del aeropuerto", "INFO");
+                alerta.show();
+            }else {
+                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha cancelado el BORRADO del aeropuerto", "INFO");
+                alerta.show();
+            }
+        }
     }
 
     @FXML
@@ -174,12 +221,127 @@ public class L_ListadoAeropuertosController {
 
     @FXML
     void editarAeropuerto(ActionEvent event) {
+        // Verificar si se seleccionó una fila en la tabla de aeropuertos privados
+        InformacionAeropuertosPrivados aeropuertoPrivadoSeleccionado = tvAeropuertosPrivados.getSelectionModel().getSelectedItem();
 
+        // Verificar si se seleccionó una fila en la tabla de aeropuertos públicos
+        InformacionAeropuertosPublicos aeropuertoPublicoSeleccionado = tvAeropuertosPublicos.getSelectionModel().getSelectedItem();
+
+        // Validar que se ha seleccionado un aeropuerto
+        if (aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
+            System.out.println("Por favor, selecciona un aeropuerto para editar.");
+        } else {
+            // Determinar el tipo de aeropuerto basado en el aeropuerto seleccionado
+            if (aeropuertoPrivadoSeleccionado != null) {
+                // Datos de aeropuerto privado
+                String nombre = aeropuertoPrivadoSeleccionado.getNombre();
+                String pais = aeropuertoPrivadoSeleccionado.getPais();
+                String ciudad = aeropuertoPrivadoSeleccionado.getCiudad();
+                String calle = aeropuertoPrivadoSeleccionado.getCalle();
+                int numero = aeropuertoPrivadoSeleccionado.getNumero();
+                int anioInauguracion = aeropuertoPrivadoSeleccionado.getAnioInauguracion();
+                int capacidad = aeropuertoPrivadoSeleccionado.getCapacidad();
+                int numSocios = aeropuertoPrivadoSeleccionado.getNumeroSocios();
+                int direccion = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
+                int id = aeropuertoPrivadoSeleccionado.getId();
+
+                // Instanciar ventana de edición para aeropuerto privado
+                L_EditarAeropuerto ventanaEditar = new L_EditarAeropuerto(nombre, pais, ciudad, calle, numero, anioInauguracion, capacidad, false, true, numSocios, 0, 0, direccion, id);
+            } else {
+                // Datos de aeropuerto público
+                String nombre = aeropuertoPublicoSeleccionado.getNombre();
+                String pais = aeropuertoPublicoSeleccionado.getPais();
+                String ciudad = aeropuertoPublicoSeleccionado.getCiudad();
+                String calle = aeropuertoPublicoSeleccionado.getCalle();
+                int numero = aeropuertoPublicoSeleccionado.getNumero();
+                int anioInauguracion = aeropuertoPublicoSeleccionado.getAnioInauguracion();
+                int capacidad = aeropuertoPublicoSeleccionado.getCapacidad();
+                float financiacion = aeropuertoPublicoSeleccionado.getFinanciacion();
+                int numTrabajadores = aeropuertoPublicoSeleccionado.getNumTrabajadores();
+                int direccion = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
+                int id = aeropuertoPublicoSeleccionado.getId();
+
+                // Instanciar ventana de edición para aeropuerto público
+                L_EditarAeropuerto ventanaEditar = new L_EditarAeropuerto(nombre, pais, ciudad, calle, numero, anioInauguracion, capacidad, true, false, 0, financiacion, numTrabajadores, direccion, id);
+            }
+        }
     }
 
     @FXML
     void mostrarAeropuerto(ActionEvent event) {
+        //Verificar si se seleccionó una fila en la tabla de aeropuertos privados
+        InformacionAeropuertosPrivados aeropuertoPrivadoSeleccionado = tvAeropuertosPrivados.getSelectionModel().getSelectedItem();
 
+        // Verificar si se seleccionó una fila en la tabla de aeropuertos públicos
+        InformacionAeropuertosPublicos aeropuertoPublicoSeleccionado = tvAeropuertosPublicos.getSelectionModel().getSelectedItem();
+
+        //Validar que se ha seleccionado un aeropuerto
+        if(aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
+            Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún aeropuerto", "ERROR");
+            alerta.show();
+        }else{
+            //Declarar variables
+            String pais, ciudad, calle, nombre;
+            int numero, anioInauguracion, capacidad, numSocios=0, numTrabajadores=0, id;
+            float financiacion=0;
+
+            //Cargar variables
+            if (aeropuertoPrivadoSeleccionado != null) {
+                pais = aeropuertoPrivadoSeleccionado.getPais();
+                ciudad = aeropuertoPrivadoSeleccionado.getCiudad();
+                calle = aeropuertoPrivadoSeleccionado.getCalle();
+                numero = aeropuertoPrivadoSeleccionado.getNumero();
+                nombre = aeropuertoPrivadoSeleccionado.getNombre();
+                anioInauguracion = aeropuertoPrivadoSeleccionado.getAnioInauguracion();
+                capacidad = aeropuertoPrivadoSeleccionado.getCapacidad();
+                numSocios = aeropuertoPrivadoSeleccionado.getNumeroSocios();
+                id = aeropuertoPrivadoSeleccionado.getId();
+            } else{
+                pais = aeropuertoPublicoSeleccionado.getPais();
+                ciudad = aeropuertoPublicoSeleccionado.getCiudad();
+                calle = aeropuertoPublicoSeleccionado.getCalle();
+                numero = aeropuertoPublicoSeleccionado.getNumero();
+                nombre = aeropuertoPublicoSeleccionado.getNombre();
+                anioInauguracion = aeropuertoPublicoSeleccionado.getAnioInauguracion();
+                capacidad = aeropuertoPublicoSeleccionado.getCapacidad();
+                financiacion = aeropuertoPublicoSeleccionado.getFinanciacion();
+                numTrabajadores = aeropuertoPublicoSeleccionado.getNumTrabajadores();
+                id = aeropuertoPublicoSeleccionado.getId();
+            }
+
+            //Generar información dirección y aeropuertos
+            String informacion = "Nombre: "+nombre+"\nPaís: "+pais+"\nDirección: C/"+calle+" "+numero+", "+ciudad+"\nAño de inauguración: "+anioInauguracion+"\nCapacidad: "+capacidad+"\nAviones:\n";
+
+            //Generar información aviones
+            ObservableList<Aviones> aviones = avionesDao.dameAvionesPorAeropuerto(id);
+            if(aviones.size()==0) {
+                informacion+="\tNO TIENE AVIONES\n";
+            }else {
+                for(Aviones avion:aviones) {
+                    String estado = (avion.getActivado() == 1) ? "Activado" : "Desactivado";
+                    informacion+="\tModelo: "+avion.getModelo()+"\n\tNúmero de asientos: "+avion.getNumeroAsientos()+"\n\tVelocidad Máxima: "+avion.getVelocidadMaxima()+"\n\t"+estado+"\n";
+                }
+            }
+
+            //Generar información público o privado
+            if(aeropuertoPrivadoSeleccionado==null) {
+                informacion+="Público\nFinanciación: "+financiacion+"\nNúmero de trabajadores: "+numTrabajadores;
+            }else {
+                informacion+="Privado\nNúmero de Socios: "+numSocios;
+            }
+
+            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, informacion, "INFO");
+            alerta.show();
+        }
+    }
+
+    /** GENERAR VENTANA DE ALERTA */
+    private Alert generarVentana(Alert.AlertType tipoDeAlerta, String mensaje, String title) {
+        Alert alerta = new Alert(tipoDeAlerta);
+        alerta.setContentText(mensaje);
+        alerta.setHeaderText(null);
+        alerta.setTitle(title);
+        return alerta;
     }
 
     @FXML
@@ -224,5 +386,46 @@ public class L_ListadoAeropuertosController {
 
         tvAeropuertosPrivados.setItems(aeropuertosPrivadosExistentes);
         tvAeropuertosPublicos.setItems(aeropuertosPublicosExistentes);
+        // Llamar al método de filtrado
+        configurarFiltradoAeropuertos();
     }
+
+    private void configurarFiltradoAeropuertos() {
+        // Filtrado para aeropuertos privados
+        FilteredList<InformacionAeropuertosPrivados> filteredPrivados = new FilteredList<>(aeropuertosPrivadosExistentes, b -> true);
+        txtFiltrar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredPrivados.setPredicate(aeropuerto -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+                return aeropuerto.getNombre().toLowerCase().contains(lowerCaseFilter)
+                        || aeropuerto.getCiudad().toLowerCase().contains(lowerCaseFilter)
+                        || aeropuerto.getPais().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+        SortedList<InformacionAeropuertosPrivados> sortedPrivados = new SortedList<>(filteredPrivados);
+        sortedPrivados.comparatorProperty().bind(tvAeropuertosPrivados.comparatorProperty());
+        tvAeropuertosPrivados.setItems(sortedPrivados);
+
+        // Filtrado para aeropuertos públicos
+        FilteredList<InformacionAeropuertosPublicos> filteredPublicos = new FilteredList<>(aeropuertosPublicosExistentes, b -> true);
+        txtFiltrar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredPublicos.setPredicate(aeropuerto -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+                return aeropuerto.getNombre().toLowerCase().contains(lowerCaseFilter)
+                        || aeropuerto.getCiudad().toLowerCase().contains(lowerCaseFilter)
+                        || aeropuerto.getPais().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+        SortedList<InformacionAeropuertosPublicos> sortedPublicos = new SortedList<>(filteredPublicos);
+        sortedPublicos.comparatorProperty().bind(tvAeropuertosPublicos.comparatorProperty());
+        tvAeropuertosPublicos.setItems(sortedPublicos);
+    }
+
 }

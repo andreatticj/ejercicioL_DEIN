@@ -80,6 +80,8 @@ public class L_AddAeropuertoController {
         txtSocios.setVisible(true);
         lblFinanciacion.setVisible(false);
         txtFinanciacion.setVisible(false);
+        txtNumTrabajadores.setVisible(false);
+        lblNumTrabajadores.setVisible(false);
     }
 
     @FXML
@@ -88,6 +90,9 @@ public class L_AddAeropuertoController {
         txtSocios.setVisible(false);
         lblFinanciacion.setVisible(true);
         txtFinanciacion.setVisible(true);
+        lblNumTrabajadores.setVisible(true);
+        txtNumTrabajadores.setVisible(true);
+
     }
 
     @FXML

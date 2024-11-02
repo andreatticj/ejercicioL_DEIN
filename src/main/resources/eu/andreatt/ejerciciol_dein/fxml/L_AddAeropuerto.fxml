@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.andreatt.ejerciciol_dein.controllers.L_AddAeropuertoController">
+<GridPane vgap="10.0" xmlns="http://javafx.com/javafx/22.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.andreatt.ejerciciol_dein.controllers.L_AddAeropuertoController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -46,7 +46,7 @@
       <Label text="Año de inaguracion:" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
       <Label text="Capacidad:" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
       <Label fx:id="lblFinanciacion" text="Financiacion" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-      <Label fx:id="lblNumTrabajaores" text="Numero de trabajadores:" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
+      <Label fx:id="lblNumTrabajadores" text="Numero de trabajadores:" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.valignment="CENTER" />
       <Label fx:id="lblSocios" text="Nº Socios" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
       <TextField fx:id="txtPais" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <GridPane.margin>
