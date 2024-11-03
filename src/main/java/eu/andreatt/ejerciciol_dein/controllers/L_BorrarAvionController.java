@@ -33,14 +33,18 @@ public class L_BorrarAvionController {
     private ObservableList<Aeropuertos> elementosComboAeropuertos;
     private ObservableList<Aviones> elementosComboAviones;
 
-    /** INITIALIZE - INICIALIZAR CARGA DE DATOS */
+    /**
+     * Metodo que se ejecuta al inicializar el controlador.
+     * Carga los datos de los aeropuertos y configura los listeners
+     * para actualizar los aviones disponibles según el aeropuerto seleccionado.
+     */
     @FXML
     void initialize() {
         // Instanciar Dao
         aeropuertosDao = new AeropuertosDao();
         avionesDao = new AvionesDao();
 
-        // Cargar combos
+        // Cargar combos de aeropuertos
         elementosComboAeropuertos = aeropuertosDao.cargarAeropuertos();
         if (!elementosComboAeropuertos.isEmpty()) {
             cmbAeropuertos.setItems(elementosComboAeropuertos);
@@ -57,7 +61,12 @@ public class L_BorrarAvionController {
         });
     }
 
-    /** Carga los aviones en base al ID del aeropuerto */
+    /**
+     * Carga los aviones disponibles para un aeropuerto específico
+     * y los muestra en el ComboBox correspondiente.
+     *
+     * @param aeropuertoId El ID del aeropuerto para cargar los aviones.
+     */
     private void cargarAvionesPorAeropuerto(int aeropuertoId) {
         elementosComboAviones = avionesDao.dameAvionesPorAeropuerto(aeropuertoId);
         if (!elementosComboAviones.isEmpty()) {
@@ -68,6 +77,13 @@ public class L_BorrarAvionController {
         }
     }
 
+    /**
+     * Metodo que se ejecuta al hacer clic en el botón de borrar.
+     * Elimina el avión seleccionado de la base de datos y actualiza
+     * la lista de aviones disponibles.
+     *
+     * @param event El evento de acción.
+     */
     @FXML
     void actBorrarAvion(ActionEvent event) {
         if (cmbAviones.getSelectionModel().getSelectedItem() != null) {
@@ -81,20 +97,32 @@ public class L_BorrarAvionController {
             Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha BORRADO el AVIÓN", "INFO");
             alerta.show();
         } else {
-            // Mensaje de alerta
+            // Mensaje de alerta si no se ha seleccionado un avión
             Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún AVIÓN", "ERROR");
             alerta.show();
         }
     }
 
+    /**
+     * Metodo que se ejecuta al hacer clic en el botón de cancelar.
+     * Cierra la ventana modal.
+     *
+     * @param event El evento de acción.
+     */
     @FXML
     void btnCancelarAvion(ActionEvent event) {
-        // Cerrar ventana modal
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
-    /** Generar ventana de alerta */
+    /**
+     * Genera una ventana de alerta con el mensaje y tipo de alerta especificados.
+     *
+     * @param tipoDeAlerta El tipo de alerta (ERROR, INFORMATION, etc.).
+     * @param mensaje      El mensaje a mostrar en la alerta.
+     * @param title        El título de la ventana de alerta.
+     * @return Un objeto Alert configurado.
+     */
     private Alert generarVentana(Alert.AlertType tipoDeAlerta, String mensaje, String title) {
         Alert alerta = new Alert(tipoDeAlerta);
         alerta.setContentText(mensaje);

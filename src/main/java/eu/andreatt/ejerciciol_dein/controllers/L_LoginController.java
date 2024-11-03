@@ -11,17 +11,27 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ * Controlador para la ventana de inicio de sesión.
+ * Este controlador maneja la lógica de autenticación del usuario.
+ */
 public class L_LoginController {
 
     @FXML
-    private Button btnLogin;
+    private Button btnLogin;  // Botón para iniciar sesión
 
     @FXML
-    private PasswordField txtPassw;
+    private PasswordField txtPassw;  // Campo para la contraseña del usuario
 
     @FXML
-    private TextField txtUser;
+    private TextField txtUser;  // Campo para el nombre de usuario
 
+    /**
+     * Maneja el evento de clic en el botón de inicio de sesión.
+     * Valida las entradas del usuario y verifica las credenciales en la base de datos.
+     *
+     * @param event El evento de acción que desencadena este método.
+     */
     @FXML
     void login(ActionEvent event) {
         // Obtener los valores ingresados
@@ -45,17 +55,23 @@ public class L_LoginController {
                 Stage stage = (Stage) btnLogin.getScene().getWindow();
                 stage.close();
 
-                new L_ListadoAeropuertos();
+                new L_ListadoAeropuertos();  // Abrir la ventana de listado de aeropuertos
             } else {
                 mostrarAlerta("El usuario o la contraseña son incorrectos", Alert.AlertType.ERROR);
             }
         }
     }
 
+    /**
+     * Muestra una alerta con un mensaje específico.
+     *
+     * @param mensaje El mensaje a mostrar en la alerta.
+     * @param tipo El tipo de alerta (advertencia, error, etc.).
+     */
     private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        alert.setHeaderText(null);  // No se muestra un encabezado en la alerta
+        alert.setContentText(mensaje);  // Establecer el mensaje en el contenido
+        alert.showAndWait();  // Mostrar la alerta y esperar a que el usuario la cierre
     }
 }

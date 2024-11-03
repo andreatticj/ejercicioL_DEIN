@@ -65,12 +65,16 @@ public class L_EditAeropuertoController {
     @FXML
     private TextField txtSocios;
 
+    /** Indica si se ha seleccionado un aeropuerto privado */
     private boolean isPrivadoSelected;
 
+    /** Indica si se ha seleccionado un aeropuerto público */
     private boolean isPublicSelected;
 
+    /** ID de la dirección asociada al aeropuerto */
     private int idDireccion;
 
+    /** ID del aeropuerto que se está editando */
     private int idAeropuerto;
 
     private AeropuertosDao aeropuertosDao;
@@ -78,72 +82,86 @@ public class L_EditAeropuertoController {
     private AeropuertosPrivadosDao aeropuertosPrivadosDao;
     private AeropuertosPublicosDao aeropuertosPublicosDao;
 
-
-    /** INITIALIZE - INICIALIZAR CARGA DE DATOS */
+    /**
+     * Metodo que se ejecuta al inicializar el controlador.
+     * Carga los datos iniciales y configura los DAOs necesarios.
+     */
     @FXML
     void initialize() {
-        //Instanciar DAO
+        // Instanciar DAO
         aeropuertosDao = new AeropuertosDao();
         direccionesDao = new DireccionesDao();
         aeropuertosPrivadosDao = new AeropuertosPrivadosDao();
         aeropuertosPublicosDao = new AeropuertosPublicosDao();
-
-
     }
 
-    /** EVENTO - AL PULSAR CANCELAR */
+    /**
+     * Evento que se ejecuta al pulsar el botón Cancelar.
+     * Muestra un mensaje de alerta y cierra la ventana modal.
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void cancelar(ActionEvent event) {
-        //Mensaje de alerta
+        // Mensaje de alerta
         Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha CANCELADO la edición del aeropuerto", "INFO");
         alerta.show();
 
-        //Cerrar ventana modal
+        // Cerrar ventana modal
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
-    /** EVENTO - AL PULSAR GUARDAR */
+    /**
+     * Evento que se ejecuta al pulsar el botón Guardar.
+     * Valida los datos ingresados, actualiza la información del aeropuerto y muestra un mensaje de alerta.
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void guardar(ActionEvent event) {
-        String errores="";
+        String errores = "";
 
-        //Existe Direccion
-        if(direccionesDao.existeDireccion(txtPais.getText(), txtCiudad.getText(), txtCalle.getText(), Integer.parseInt(txtNumero.getText()))!=-1){
-            errores+="-La DIRECCIÓN, porque ya existe\n";
+        // Existe Direccion
+        if (direccionesDao.existeDireccion(txtPais.getText(), txtCiudad.getText(), txtCalle.getText(), Integer.parseInt(txtNumero.getText())) != -1) {
+            errores += "-La DIRECCIÓN, porque ya existe\n";
         }
 
-        //Existe Aeropuerto
-        if(aeropuertosDao.existeNombreAeropuerto(txtNombre.getText())) {
-            errores+="-El AEROPUERTO, porque ya existe\n";
+        // Existe Aeropuerto
+        if (aeropuertosDao.existeNombreAeropuerto(txtNombre.getText())) {
+            errores += "-El AEROPUERTO, porque ya existe\n";
         }
 
-        //Actualizar
+        // Actualizar
         direccionesDao.actualizarDireccion(idDireccion, txtPais.getText(), txtCiudad.getText(), txtCalle.getText(), Integer.parseInt(txtNumero.getText()));
         aeropuertosDao.actualizarAeropuerto(idAeropuerto, txtNombre.getText(), Integer.parseInt(txtAnioInaguracion.getText()), Integer.parseInt(txtCapaciad.getText()), idDireccion);
-        if(isPrivadoSelected) {
+        if (isPrivadoSelected) {
             aeropuertosPrivadosDao.actualizarAeropuertoPrivado(idAeropuerto, Integer.parseInt(txtSocios.getText()));
-        }else {
+        } else {
             aeropuertosPublicosDao.actualizarAeropuertoPublico(idAeropuerto, Float.parseFloat(txtFinanciacion.getText()), Integer.parseInt(txtNumTrabajadores.getText()));
         }
 
-        //AMostrar informacion
-        if(errores.trim().length()==0) {
-            //Mensaje de alerta
+        // Mostrar información
+        if (errores.trim().length() == 0) {
+            // Mensaje de alerta
             Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se han ACTUALIZADO los datos del aeropuerto", "INFO");
             alerta.show();
-        }else {
-            //Mensaje de alerta
-            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se han ACTUALIZADO los datos del aeropuerto a excepción de:\n"+ errores, "INFO");
+        } else {
+            // Mensaje de alerta
+            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se han ACTUALIZADO los datos del aeropuerto a excepción de:\n" + errores, "INFO");
             alerta.show();
         }
 
-        //Cerrar ventana modal
+        // Cerrar ventana modal
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
-    /** GETTERS Y SETTERS */
+    /**
+     * Metodos getter y setter para los atributos privados.
+     * Se utilizan para acceder y modificar el estado de los atributos desde fuera de la clase.
+     */
+
     public RadioButton getRadioPrivado() {
         return rbPrivado;
     }
@@ -272,42 +290,48 @@ public class L_EditAeropuertoController {
         this.idAeropuerto = idAeropuerto;
     }
 
-    /** ESTABLECER RADIO PRIVADO COMO SELECCIONADO */
+    /**
+     * Establece el radio de Aeropuerto Privado como seleccionado
+     * y ajusta la visibilidad de los componentes relacionados.
+     */
     public void habilitarRadioPrivados() {
         rbPrivado.setSelected(true);
         rbPublico.setSelected(false);
-        rbPrivado.setDisable(true);
-        rbPublico.setDisable(true);
-
         lblSocios.setVisible(true);
-        lblFinanciacion.setVisible(false);
-        lblNumTrabajadores.setVisible(false);
         txtSocios.setVisible(true);
+        lblFinanciacion.setVisible(false);
         txtFinanciacion.setVisible(false);
+        lblNumTrabajadores.setVisible(false);
         txtNumTrabajadores.setVisible(false);
     }
 
-    /** ESTABLECER RADIO PÚBLICO COMO SELECCIONADO */
+    /**
+     * Establece el radio de Aeropuerto Público como seleccionado
+     * y ajusta la visibilidad de los componentes relacionados.
+     */
     public void habilitarRadioPublicos() {
-        rbPublico.setSelected(true);
         rbPrivado.setSelected(false);
-        rbPrivado.setDisable(true);
-        rbPublico.setDisable(true);
-
+        rbPublico.setSelected(true);
         lblSocios.setVisible(false);
-        lblFinanciacion.setVisible(true);
-        lblNumTrabajadores.setVisible(true);
         txtSocios.setVisible(false);
+        lblFinanciacion.setVisible(true);
         txtFinanciacion.setVisible(true);
+        lblNumTrabajadores.setVisible(true);
         txtNumTrabajadores.setVisible(true);
     }
 
-    /** GENERAR VENTANA DE ALERTA */
-    private Alert generarVentana(Alert.AlertType tipoDeAlerta, String mensaje, String title) {
-        Alert alerta = new Alert(tipoDeAlerta);
-        alerta.setContentText(mensaje);
-        alerta.setHeaderText(null);
-        alerta.setTitle(title);
-        return alerta;
+    /**
+     * Genera una ventana de alerta con el tipo de alerta, título y mensaje especificados.
+     *
+     * @param tipo el tipo de alerta
+     * @param titulo el título de la ventana
+     * @param mensaje el mensaje a mostrar
+     * @return una instancia de Alert configurada
+     */
+    private Alert generarVentana(Alert.AlertType tipo, String titulo, String mensaje) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setContentText(mensaje);
+        return alert;
     }
 }

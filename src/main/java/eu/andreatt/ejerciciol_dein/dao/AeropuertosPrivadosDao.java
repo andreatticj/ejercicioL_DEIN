@@ -9,12 +9,19 @@ import eu.andreatt.ejerciciol_dein.model.InformacionAeropuertosPrivados;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * Clase de acceso a datos para gestionar las operaciones relacionadas
+ * con los aeropuertos privados en la base de datos.
+ */
 public class AeropuertosPrivadosDao {
 	private ConexionBD conexion;
-	
-	/** CARGAR LOS AEROPUERTOS PRIVADOS EXISTENTES EN BASE DE DATOS */
-	public ObservableList<InformacionAeropuertosPrivados> cargarAeropuertosPrivados() {
 
+	/**
+	 * Carga los aeropuertos privados existentes en la base de datos.
+	 *
+	 * @return Una lista observable de objetos InformacionAeropuertosPrivados.
+	 */
+	public ObservableList<InformacionAeropuertosPrivados> cargarAeropuertosPrivados() {
 		ObservableList<InformacionAeropuertosPrivados> aeropuertosPrivados = FXCollections.observableArrayList();
 		try {
 			conexion = new ConexionBD();
@@ -32,7 +39,7 @@ public class AeropuertosPrivadosDao {
 				String calle = rs.getString("calle");
 				int numero = rs.getInt("numero");
 				int numeroSocios = rs.getInt("numero_socios");
-				
+
 				aeropuertosPrivados.add(new InformacionAeropuertosPrivados(id, nombre, anioInauguracion, capacidad, pais, ciudad, calle, numero, numeroSocios));
 			}
 			rs.close();
@@ -43,74 +50,91 @@ public class AeropuertosPrivadosDao {
 		}
 		return aeropuertosPrivados;
 	}
-	
-	/** INSERTAR AEROPUERTO PRIVADO EN BASE DE DATOS */
+
+	/**
+	 * Inserta un nuevo aeropuerto privado en la base de datos.
+	 *
+	 * @param idAeropuerto El ID del aeropuerto.
+	 * @param numSocios El número de socios del aeropuerto privado.
+	 * @return true si la inserción fue exitosa, false en caso contrario.
+	 */
 	public boolean insertarAeropuertoPrivado(int idAeropuerto, int numSocios) {
 		try {
-			conexion = new ConexionBD();       
+			conexion = new ConexionBD();
 			String consulta = "INSERT INTO aeropuertos_privados (id_aeropuerto, numero_socios) VALUES (?, ?)";
-	
-	    	PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
-	        pstmt.setInt(1, idAeropuerto);
-	        pstmt.setInt(2, numSocios);
 
-	    	     
-	    	pstmt.executeUpdate();        
-	    	conexion.closeConnection();
-	    	return true;
-	    
-	    } catch (SQLException e) {	    	
-	    	e.printStackTrace();
-	    } 
+			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
+			pstmt.setInt(1, idAeropuerto);
+			pstmt.setInt(2, numSocios);
+
+
+			pstmt.executeUpdate();
+			conexion.closeConnection();
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
-	
-	/** BORRAR AEROPUERTO PRIVADO EN BASE DE DATOS */
+
+	/**
+	 * Borra un aeropuerto privado de la base de datos.
+	 *
+	 * @param idAeropuerto El ID del aeropuerto privado a borrar.
+	 * @return true si la eliminación fue exitosa, false en caso contrario.
+	 */
 	public boolean borrarAeropuertoPrivado(int idAeropuerto) {
 		try {
-			conexion = new ConexionBD();       
+			conexion = new ConexionBD();
 			String consulta = "DELETE FROM aeropuertos_privados WHERE id_aeropuerto = ?";
-	
-	    	PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
-	        pstmt.setInt(1, idAeropuerto);
-	    	     
-			int filasAfectadas = pstmt.executeUpdate();
-					    
-		    conexion.closeConnection();
 
-		    if (filasAfectadas > 0) {
-		        return true;
-		    } else {
-		        return false;
-		    }
-	    } catch (SQLException e) {	    	
-	    	e.printStackTrace();
-	    } 
+			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
+			pstmt.setInt(1, idAeropuerto);
+
+			int filasAfectadas = pstmt.executeUpdate();
+
+			conexion.closeConnection();
+
+			if (filasAfectadas > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
-	
-	/** ACTUALIZAR AEROPUERTO PRIVADO EN BASE DE DATOS */
+
+	/**
+	 * Actualiza la información de un aeropuerto privado en la base de datos.
+	 *
+	 * @param idAeropuerto El ID del aeropuerto privado a actualizar.
+	 * @param numSocios El nuevo número de socios del aeropuerto privado.
+	 * @return true si la actualización fue exitosa, false en caso contrario.
+	 */
 	public boolean actualizarAeropuertoPrivado(int idAeropuerto, int numSocios) {
 		try {
-			conexion = new ConexionBD();       
+			conexion = new ConexionBD();
 			String consulta = "UPDATE aeropuertos_privados SET numero_socios = ? WHERE id_aeropuerto = ?";
-	
-	    	PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
-	        pstmt.setInt(1, idAeropuerto);
-	        pstmt.setInt(2, numSocios);
-	    	     
-			int filasAfectadas = pstmt.executeUpdate();
-					    
-		    conexion.closeConnection();
 
-		    if (filasAfectadas > 0) {
-		        return true;
-		    } else {
-		        return false;
-		    }
-	    } catch (SQLException e) {	    	
-	    	e.printStackTrace();
-	    } 
+			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
+			pstmt.setInt(1, idAeropuerto);
+			pstmt.setInt(2, numSocios);
+
+			int filasAfectadas = pstmt.executeUpdate();
+
+			conexion.closeConnection();
+
+			if (filasAfectadas > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
-	}	
+	}
 }

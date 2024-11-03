@@ -2,41 +2,82 @@ package eu.andreatt.ejerciciol_dein.model;
 
 import java.util.Objects;
 
-/** CLASE USUARIOS PARA LOS EJERCICIOS (L-M) */
+/**
+ * Clase que representa un usuario en el contexto de los ejercicios L-M.
+ * Esta clase almacena información sobre el nombre de usuario y la contraseña.
+ */
 public class Usuarios {
 
-	/** VARIABLES */
-	private String usuario, password;
+	/** Nombre del usuario. */
+	private String usuario;
 
-	/** CONSTRUCTOR */
+	/** Contraseña del usuario. */
+	private String password;
+
+	/**
+	 * Constructor que inicializa un objeto Usuarios
+	 * con el nombre de usuario y la contraseña proporcionados.
+	 *
+	 * @param usuario Nombre del usuario.
+	 * @param password Contraseña del usuario.
+	 */
 	public Usuarios(String usuario, String password) {
 		this.usuario = usuario;
 		this.password = password;
 	}
 
-	/** GETTERS Y SETTERS */
+	/**
+	 * Obtiene el nombre del usuario.
+	 *
+	 * @return usuario El nombre del usuario.
+	 */
 	public String getUsuario() {
 		return usuario;
 	}
 
+	/**
+	 * Establece el nombre del usuario.
+	 *
+	 * @param usuario Nombre a establecer para el usuario.
+	 */
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 
+	/**
+	 * Obtiene la contraseña del usuario.
+	 *
+	 * @return password La contraseña del usuario.
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Establece la contraseña del usuario.
+	 *
+	 * @param password Contraseña a establecer para el usuario.
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	/** EQUALS Y HASHCODE */
+	/**
+	 * Calcula y devuelve el código hash de este objeto Usuarios.
+	 *
+	 * @return int Código hash basado en los atributos relevantes del usuario.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(password, usuario);
 	}
 
+	/**
+	 * Compara este objeto Usuarios con otro para determinar si son iguales.
+	 *
+	 * @param obj Objeto con el que se comparará esta información del usuario.
+	 * @return boolean True si los usuarios son iguales, false de lo contrario.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

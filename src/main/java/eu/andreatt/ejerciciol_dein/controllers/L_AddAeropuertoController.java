@@ -13,6 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
+/**
+ * Controlador para gestionar la creación de un nuevo aeropuerto.
+ * Proporciona la interfaz para seleccionar si el aeropuerto es privado o público
+ * y captura la información necesaria para cada caso.
+ */
 public class L_AddAeropuertoController {
 
     @FXML
@@ -46,7 +51,7 @@ public class L_AddAeropuertoController {
     private TextField txtCalle;
 
     @FXML
-    private TextField txtCapacidad; // Corregido
+    private TextField txtCapacidad;
 
     @FXML
     private TextField txtCiudad;
@@ -74,6 +79,12 @@ public class L_AddAeropuertoController {
     private AeropuertosPrivadosDao aeropuertosPrivadosDao;
     private AeropuertosPublicosDao aeropuertosPublicosDao;
 
+    /**
+     * Metodo de acción cuando se selecciona el radio botón de aeropuerto privado.
+     * Muestra los campos específicos de un aeropuerto privado y oculta los de un público.
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void actPrivado(ActionEvent event) {
         lblSocios.setVisible(true);
@@ -84,6 +95,12 @@ public class L_AddAeropuertoController {
         lblNumTrabajadores.setVisible(false);
     }
 
+    /**
+     * Metodo de acción cuando se selecciona el radio botón de aeropuerto público.
+     * Muestra los campos específicos de un aeropuerto público y oculta los de un privado.
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void actPublico(ActionEvent event) {
         lblSocios.setVisible(false);
@@ -92,15 +109,27 @@ public class L_AddAeropuertoController {
         txtFinanciacion.setVisible(true);
         lblNumTrabajadores.setVisible(true);
         txtNumTrabajadores.setVisible(true);
-
     }
 
+    /**
+     * Metodo de acción para cancelar la operación de añadir un aeropuerto.
+     * Cierra la ventana actual sin guardar cambios.
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void cancelar(ActionEvent event) {
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Metodo de acción para guardar el aeropuerto en la base de datos.
+     * Verifica y captura los datos ingresados, los procesa, y realiza las inserciones en las tablas correspondientes
+     * según el tipo de aeropuerto (privado o público).
+     *
+     * @param event el evento de acción
+     */
     @FXML
     void guardar(ActionEvent event) {
         try {
@@ -152,6 +181,10 @@ public class L_AddAeropuertoController {
         }
     }
 
+    /**
+     * Metodo de inicialización de la interfaz.
+     * Configura los componentes iniciales, si es necesario.
+     */
     @FXML
     void initialize() {}
 }

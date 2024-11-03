@@ -13,6 +13,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
 
+/**
+ * Controlador de la ventana de activación/desactivación de aviones.
+ * Permite seleccionar un aeropuerto y un avión asociados, así como actualizar
+ * el estado de activación de un avión en la base de datos.
+ */
 public class L_ActivarDesactivarAvionController {
 
     @FXML
@@ -39,92 +44,115 @@ public class L_ActivarDesactivarAvionController {
     private ObservableList<Aeropuertos> elementosComboAeropuertos;
     private ObservableList<Aviones> elementosComboAviones;
 
-    /** INITIALIZE - INICIALIZAR CARGA DE DATOS */
+    /**
+     * Método de inicialización llamado automáticamente al cargar la vista.
+     * Configura los ComboBoxes de aeropuertos y aviones, y agrega listeners para actualizar el estado.
+     */
     @FXML
     void initialize() {
-        // Instanciar Dao
+        // Instanciar DAOs
         aeropuertosDao = new AeropuertosDao();
         avionesDao = new AvionesDao();
 
-        // Cargar combos
+        // Cargar aeropuertos en el ComboBox
         elementosComboAeropuertos = aeropuertosDao.cargarAeropuertos();
         cmbAeropuertos.setItems(elementosComboAeropuertos);
 
-        // Seleccionar el primer aeropuerto por defecto
+        // Seleccionar el primer aeropuerto y cargar sus aviones
         if (!elementosComboAeropuertos.isEmpty()) {
             cmbAeropuertos.setValue(elementosComboAeropuertos.get(0));
             cargarAvionesPorAeropuerto(elementosComboAeropuertos.get(0));
         }
 
-        // Listener para el ComboBox de aeropuertos
+        // Listener para actualizar aviones al cambiar el aeropuerto
         cmbAeropuertos.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 cargarAvionesPorAeropuerto(newValue);
             }
         });
 
-        // Listener para el ComboBox de aviones
+        // Listener para actualizar el estado de activación del avión seleccionado
         cmbAviones.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             actualizarEstadoRadioButton();
         });
     }
 
+    /**
+     * Carga los aviones del aeropuerto seleccionado en el ComboBox correspondiente.
+     *
+     * @param aeropuerto El aeropuerto seleccionado.
+     */
     private void cargarAvionesPorAeropuerto(Aeropuertos aeropuerto) {
         elementosComboAviones = avionesDao.dameAvionesPorAeropuerto(aeropuerto.getId());
         cmbAviones.setItems(elementosComboAviones);
 
+        // Seleccionar el primer avión en el ComboBox
         if (!elementosComboAviones.isEmpty()) {
-            cmbAviones.setValue(elementosComboAviones.get(0)); // Seleccionar el primer avión
+            cmbAviones.setValue(elementosComboAviones.get(0));
         } else {
-            cmbAviones.setValue(null); // Si no hay aviones, asegurarse de que esté vacío
+            cmbAviones.setValue(null);
         }
-        // Actualizar el estado del radio button
+
+        // Actualizar el estado de activación del avión
         actualizarEstadoRadioButton();
     }
 
+    /**
+     * Actualiza el estado de los RadioButton según el estado de activación del avión seleccionado.
+     */
     private void actualizarEstadoRadioButton() {
         if (cmbAviones.getSelectionModel().getSelectedItem() != null) {
             int activado = cmbAviones.getSelectionModel().getSelectedItem().getActivado();
-            if (activado == 0) {
-                rbDesactivado.setSelected(true);
-                rbActivado.setSelected(false);
-            } else {
-                rbDesactivado.setSelected(false);
-                rbActivado.setSelected(true);
-            }
+            rbActivado.setSelected(activado == 1);
+            rbDesactivado.setSelected(activado == 0);
         } else {
-            // Si no hay avión seleccionado, desmarcar ambos
             rbActivado.setSelected(false);
             rbDesactivado.setSelected(false);
         }
     }
 
+    /**
+     * Cierra la ventana actual al pulsar el botón "Cancelar".
+     *
+     * @param event Evento de acción del botón "Cancelar".
+     */
     @FXML
     void actCancelar(ActionEvent event) {
-        // Cerrar ventana modal
         Stage stage = (Stage) btnCancelar.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Guarda el estado de activación del avión seleccionado al pulsar el botón "Guardar".
+     * Muestra una alerta de confirmación o error según el caso.
+     *
+     * @param event Evento de acción del botón "Guardar".
+     */
     @FXML
     void actGuardar(ActionEvent event) {
-        // Actualizar campo activado en base al radio seleccionado
         if (cmbAviones.getSelectionModel().getSelectedItem() != null) {
             int id = cmbAviones.getSelectionModel().getSelectedItem().getId();
             int activado = rbActivado.isSelected() ? 1 : 0;
             avionesDao.actualizarAvionActivo(id, activado);
 
-            // Mensaje de alerta
+            // Mostrar alerta de confirmación
             Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha actualizado el estado del AVIÓN", "INFO");
             alerta.show();
         } else {
-            // Mensaje de alerta
+            // Mostrar alerta de error
             Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún AVIÓN", "ERROR");
             alerta.show();
         }
     }
 
-    /** GENERAR VENTANA DE ALERTA */
+    /**
+     * Genera una ventana de alerta personalizada.
+     *
+     * @param tipoDeAlerta Tipo de alerta (información o error).
+     * @param mensaje Mensaje a mostrar en la alerta.
+     * @param title Título de la alerta.
+     * @return La alerta configurada.
+     */
     private Alert generarVentana(Alert.AlertType tipoDeAlerta, String mensaje, String title) {
         Alert alerta = new Alert(tipoDeAlerta);
         alerta.setContentText(mensaje);
