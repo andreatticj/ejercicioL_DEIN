@@ -104,7 +104,7 @@ public class L_EditAeropuertoController {
     @FXML
     void cancelar(ActionEvent event) {
         // Mensaje de alerta
-        Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha CANCELADO la edición del aeropuerto", "INFO");
+        Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "INFO","Se ha CANCELADO la edición del aeropuerto");
         alerta.show();
 
         // Cerrar ventana modal
@@ -144,11 +144,11 @@ public class L_EditAeropuertoController {
         // Mostrar información
         if (errores.trim().length() == 0) {
             // Mensaje de alerta
-            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se han ACTUALIZADO los datos del aeropuerto", "INFO");
+            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "INFO","Se han ACTUALIZADO los datos del aeropuerto");
             alerta.show();
         } else {
             // Mensaje de alerta
-            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se han ACTUALIZADO los datos del aeropuerto a excepción de:\n" + errores, "INFO");
+            Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "INFO","Se han ACTUALIZADO los datos del aeropuerto a excepción de:\n" + errores);
             alerta.show();
         }
 

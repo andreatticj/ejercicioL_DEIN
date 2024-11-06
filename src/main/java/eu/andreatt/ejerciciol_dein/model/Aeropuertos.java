@@ -12,7 +12,7 @@ public class Aeropuertos {
 	private int id;
 
 	/** Año en que se inauguró el aeropuerto. */
-	private int anioInauguracion;
+	private int anioInaguracion;
 
 	/** Capacidad del aeropuerto en términos de número de pasajeros. */
 	private int capacidad;
@@ -28,14 +28,14 @@ public class Aeropuertos {
 	 *
 	 * @param id Identificador único del aeropuerto.
 	 * @param nombre Nombre del aeropuerto.
-	 * @param anioInauguracion Año de inauguración del aeropuerto.
+	 * @param anioInaguracion Año de inauguración del aeropuerto.
 	 * @param capacidad Capacidad máxima del aeropuerto.
 	 * @param id_direccion Identificador de la dirección asociada al aeropuerto.
 	 */
-	public Aeropuertos(int id, String nombre, int anioInauguracion, int capacidad, int id_direccion) {
+	public Aeropuertos(int id, String nombre, int anioInaguracion, int capacidad, int id_direccion) {
 		this.id = id;
 		this.nombre = nombre;
-		this.anioInauguracion = anioInauguracion;
+		this.anioInaguracion = anioInaguracion;
 		this.capacidad = capacidad;
 		this.id_direccion = id_direccion;
 	}
@@ -63,8 +63,8 @@ public class Aeropuertos {
 	 *
 	 * @return anioInauguracion El año de inauguración.
 	 */
-	public int getAnioInauguracion() {
-		return anioInauguracion;
+	public int getAnioInaguracion() {
+		return anioInaguracion;
 	}
 
 	/**
@@ -72,8 +72,8 @@ public class Aeropuertos {
 	 *
 	 * @param anioInauguracion Año de inauguración a establecer.
 	 */
-	public void setAnioInauguracion(int anioInauguracion) {
-		this.anioInauguracion = anioInauguracion;
+	public void setAnioInaguracion(int anioInauguracion) {
+		this.anioInaguracion = anioInaguracion;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class Aeropuertos {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(anioInauguracion, capacidad, id, id_direccion, nombre);
+		return Objects.hash(anioInaguracion, capacidad, id, id_direccion, nombre);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class Aeropuertos {
 		if (getClass() != obj.getClass())
 			return false;
 		Aeropuertos other = (Aeropuertos) obj;
-		return anioInauguracion == other.anioInauguracion && capacidad == other.capacidad && id == other.id
+		return anioInaguracion == other.anioInaguracion && capacidad == other.capacidad && id == other.id
 				&& id_direccion == other.id_direccion && Objects.equals(nombre, other.nombre);
 	}
 

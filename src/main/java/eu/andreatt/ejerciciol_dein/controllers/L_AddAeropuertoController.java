@@ -6,6 +6,8 @@ import eu.andreatt.ejerciciol_dein.dao.AeropuertosPublicosDao;
 import eu.andreatt.ejerciciol_dein.dao.DireccionesDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -45,13 +47,13 @@ public class L_AddAeropuertoController {
     private RadioButton rbPublico;
 
     @FXML
-    private TextField txtAnioInauguracion;
+    private TextField txtAnioInaguracion;
 
     @FXML
     private TextField txtCalle;
 
     @FXML
-    private TextField txtCapacidad;
+    private TextField txtCapaciad;
 
     @FXML
     private TextField txtCiudad;
@@ -133,16 +135,26 @@ public class L_AddAeropuertoController {
     @FXML
     void guardar(ActionEvent event) {
         try {
+            // Obtener los errores de los campos
+            String errores = validarCampos();
+
+            // Si hay errores, mostrar la alerta
+            if (!errores.isEmpty()) {
+                mostrarAlerta(AlertType.ERROR, "Errores en los campos", errores);
+                return;
+            }
+
+            // Si no hay errores, proceder con el guardado
             String nombre = txtNombre.getText();
             String calle = txtCalle.getText();
             int numero = Integer.parseInt(txtNumero.getText());
             String ciudad = txtCiudad.getText();
             String pais = txtPais.getText();
-            int anioInauguracion = Integer.parseInt(txtAnioInauguracion.getText());
-            int capacidad = Integer.parseInt(txtCapacidad.getText());
-            int numTrabajadores = Integer.parseInt(txtNumTrabajadores.getText());
-            int socios = rbPrivado.isSelected() ? Integer.parseInt(txtSocios.getText()) : 0; // Solo si es privado
-            float financiacion = rbPublico.isSelected() ? Float.parseFloat(txtFinanciacion.getText()) : 0; // Solo si es público
+            int anioInauguracion = Integer.parseInt(txtAnioInaguracion.getText());
+            int capacidad = Integer.parseInt(txtCapaciad.getText());
+            int numTrabajadores = rbPublico.isSelected() ? Integer.parseInt(txtNumTrabajadores.getText()) : 0;
+            int socios = rbPrivado.isSelected() ? Integer.parseInt(txtSocios.getText()) : 0;
+            float financiacion = rbPublico.isSelected() ? Float.parseFloat(txtFinanciacion.getText()) : 0;
 
             // Inicializar DAOs
             aeropuertosDao = new AeropuertosDao();
@@ -152,39 +164,138 @@ public class L_AddAeropuertoController {
 
             // Verificar si la dirección ya existe
             int direccionId = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
-
-            // Si la dirección no existe, insertarla
-            if (direccionId == -1) { // Cambiar 0 por -1 para verificar existencia
+            if (direccionId == -1) {
                 if (!direccionesDao.insertarDireccion(pais, ciudad, calle, numero)) {
-                    System.out.println("Error al insertar la dirección.");
-                    return; // Salir del método si no se puede insertar la dirección
+                    mostrarAlerta(AlertType.ERROR, "Error", "Error al insertar la dirección.");
+                    return;
                 }
-                direccionId = direccionesDao.existeDireccion(pais, ciudad, calle, numero); // Obtener el nuevo ID
+                direccionId = direccionesDao.existeDireccion(pais, ciudad, calle, numero);
             }
 
-            // Insertar el aeropuerto basado en si es privado o público
-            aeropuertosDao.insertarAeropuerto(nombre, anioInauguracion, capacidad, direccionId);
+            // Insertar el aeropuerto
+            boolean aeropuertoInsertado = aeropuertosDao.insertarAeropuerto(nombre, anioInauguracion, capacidad, direccionId);
+            if (!aeropuertoInsertado) {
+                mostrarAlerta(AlertType.ERROR, "Error", "Error al insertar el aeropuerto.");
+                return;
+            }
+
+            // Obtener el ID del aeropuerto recién insertado
+            int aeropuertoId = aeropuertosDao.dameIdDeAeropuerto(nombre, anioInauguracion, capacidad, direccionId);
+            if (aeropuertoId == -1) {
+                mostrarAlerta(AlertType.ERROR, "Error", "No se pudo obtener el ID del aeropuerto insertado.");
+                return;
+            }
+
+            // Insertar según el tipo de aeropuerto
             if (rbPrivado.isSelected()) {
-                aeropuertosPrivadosDao.insertarAeropuertoPrivado(aeropuertosDao.dameIdDeAeropuerto(nombre, anioInauguracion, capacidad, direccionId), socios);
-            } else {
-                aeropuertosPublicosDao.insertarAeropuertoPublico(aeropuertosDao.dameIdDeAeropuerto(nombre, anioInauguracion, capacidad, direccionId), financiacion, numTrabajadores);
+                if (!aeropuertosPrivadosDao.insertarAeropuertoPrivado(aeropuertoId, socios)) {
+                    mostrarAlerta(AlertType.ERROR, "Error", "Error al insertar el aeropuerto privado.");
+                    return;
+                }
+            } else if (rbPublico.isSelected()) {
+                if (!aeropuertosPublicosDao.insertarAeropuertoPublico(aeropuertoId, financiacion, numTrabajadores)) {
+                    mostrarAlerta(AlertType.ERROR, "Error", "Error al insertar el aeropuerto público.");
+                    return;
+                }
             }
 
             // Cerrar la ventana
             Stage stage = (Stage) btnGuardar.getScene().getWindow();
             stage.close();
 
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Entrada inválida. Por favor, verifique los datos ingresados.");
         } catch (Exception e) {
-            System.out.println("Error al guardar el aeropuerto: " + e.getMessage());
+            mostrarAlerta(AlertType.ERROR, "Error", "Error al guardar el aeropuerto: " + e.getMessage());
+            e.printStackTrace(); // Para depuración en consola
         }
     }
+
+
+
+    /**
+     * Muestra una alerta con el tipo, título y mensaje proporcionados.
+     *
+     * @param tipo Tipo de alerta (ERROR, INFORMATION, etc.)
+     * @param titulo Título de la alerta
+     * @param mensaje Mensaje que se mostrará en la alerta
+     */
+    private void mostrarAlerta(AlertType tipo, String titulo, String mensaje) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private String validarCampos() {
+        StringBuilder errores = new StringBuilder();
+
+        // Verificar campos obligatorios y con formato
+        if (txtNombre.getText().isEmpty()) {
+            errores.append("El campo 'Nombre' es obligatorio.\n");
+        }
+        if (txtCalle.getText().isEmpty()) {
+            errores.append("El campo 'Calle' es obligatorio.\n");
+        }
+        if (txtCiudad.getText().isEmpty()) {
+            errores.append("El campo 'Ciudad' es obligatorio.\n");
+        }
+        if (txtPais.getText().isEmpty()) {
+            errores.append("El campo 'País' es obligatorio.\n");
+        }
+
+        // Verificar que los campos numéricos sean válidos
+        try {
+            Integer.parseInt(txtNumero.getText());
+        } catch (NumberFormatException e) {
+            errores.append("El campo 'Número' debe ser un número válido.\n");
+        }
+
+        try {
+            Integer.parseInt(txtAnioInaguracion.getText());
+        } catch (NumberFormatException e) {
+            errores.append("El campo 'Año de Inauguración' debe ser un número válido.\n");
+        }
+
+        try {
+            Integer.parseInt(txtCapaciad.getText());
+        } catch (NumberFormatException e) {
+            errores.append("El campo 'Capacidad' debe ser un número válido.\n");
+        }
+
+        // Verificar los campos que dependen de si es privado o público
+        if (rbPublico.isSelected()) {
+            try {
+                Integer.parseInt(txtNumTrabajadores.getText());
+            } catch (NumberFormatException e) {
+                errores.append("El campo 'Número de Trabajadores' debe ser un número válido.\n");
+            }
+        }
+
+        if (rbPrivado.isSelected()) {
+            try {
+                Integer.parseInt(txtSocios.getText());
+            } catch (NumberFormatException e) {
+                errores.append("El campo 'Socios' debe ser un número válido.\n");
+            }
+        }
+
+        if (rbPublico.isSelected()) {
+            try {
+                Float.parseFloat(txtFinanciacion.getText());
+            } catch (NumberFormatException e) {
+                errores.append("El campo 'Financiación' debe ser un número válido.\n");
+            }
+        }
+
+        // Devolver los errores encontrados, o un mensaje vacío si no hay errores
+        return errores.toString();
+    }
+
 
     /**
      * Metodo de inicialización de la interfaz.
      * Configura los componentes iniciales, si es necesario.
      */
     @FXML
-    void initialize() {}
+    void initialize() { System.out.println(txtAnioInaguracion); }
 }

@@ -125,37 +125,74 @@ public class L_ListadoAeropuertosController {
     private AvionesDao avionesDao;
 
     private ObservableList<InformacionAeropuertosPrivados> aeropuertosPrivadosExistentes;
-    private ObservableList<InformacionAeropuertosPublicos>aeropuertosPublicosExistentes;
+    private ObservableList<InformacionAeropuertosPublicos> aeropuertosPublicosExistentes;
 
+    /**
+     * Activa o desactiva la funcionalidad de aviones.
+     *
+     * @param event Evento generado al activar/desactivar aviones.
+     */
     @FXML
     void actDesAviones(ActionEvent event) {
         new L_ActivarDesactivarAvion();
     }
 
-    /** EVENTO - AL PULSAR PRIVADOS */
+    /**
+     * Maneja el evento al seleccionar la opción de aeropuertos privados.
+     * <p>
+     * Muestra la tabla de aeropuertos privados y oculta la de aeropuertos públicos.
+     *
+     * @param event Evento generado al pulsar el botón de aeropuertos privados.
+     */
     @FXML
     void actPrivados(ActionEvent event) {
         tvAeropuertosPublicos.setVisible(false);
         tvAeropuertosPrivados.setVisible(true);
     }
 
-    /** EVENTO - AL PULSAR PÚBLICOS */
+    /**
+     * Maneja el evento al seleccionar la opción de aeropuertos públicos.
+     * <p>
+     * Muestra la tabla de aeropuertos públicos y oculta la de aeropuertos privados.
+     *
+     * @param event Evento generado al pulsar el botón de aeropuertos públicos.
+     */
     @FXML
     void actPublicos(ActionEvent event) {
         tvAeropuertosPrivados.setVisible(false);
         tvAeropuertosPublicos.setVisible(true);
     }
 
+    /**
+     * Metodo que se ejecuta al pulsar el botón para añadir un nuevo aeropuerto.
+     * Abre la ventana para añadir un aeropuerto.
+     *
+     * @param event El evento de acción generado al pulsar el botón.
+     */
     @FXML
     void aniadirAeropuerto(ActionEvent event) {
         new L_AddAeropuerto();
     }
 
+
+    /**
+     * Metodo que se ejecuta al pulsar el botón para añadir un nuevo avión.
+     * Abre la ventana para añadir un avión.
+     *
+     * @param event El evento de acción generado al pulsar el botón.
+     */
     @FXML
     void aniadirAviones(ActionEvent event) {
         new L_AddAvion();
     }
 
+    /**
+     * Metodo que se ejecuta al pulsar el botón para borrar un aeropuerto.
+     * Verifica si se ha seleccionado un aeropuerto en las tablas correspondientes,
+     * solicita confirmación al usuario y procede a borrar el aeropuerto seleccionado.
+     *
+     * @param event El evento de acción generado al pulsar el botón.
+     */
     @FXML
     void borrarAeropuerto(ActionEvent event) {
         //Verificar si se seleccionó una fila en la tabla de aeropuertos privados
@@ -165,16 +202,16 @@ public class L_ListadoAeropuertosController {
         InformacionAeropuertosPublicos aeropuertoPublicoSeleccionado = tvAeropuertosPublicos.getSelectionModel().getSelectedItem();
 
         //Validar que se ha seleccionado un aeropuerto
-        if(aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
+        if (aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
             Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún aeropuerto", "ERROR");
             alerta.show();
-        }else{
+        } else {
             //Solicitar confirmación
             Alert a = generarVentana(Alert.AlertType.CONFIRMATION, "¿Desea BORRAR el aeropuerto?", "CONFIRMACIÓN");
             a.showAndWait();
 
             //Borrar aeropuerto en confirmación
-            if(a.getResult().getButtonData().toString().equals("OK_DONE")) {
+            if (a.getResult().getButtonData().toString().equals("OK_DONE")) {
                 if (aeropuertoPrivadoSeleccionado != null) {
                     String pais = aeropuertoPrivadoSeleccionado.getPais();
                     String ciudad = aeropuertoPrivadoSeleccionado.getCiudad();
@@ -189,7 +226,7 @@ public class L_ListadoAeropuertosController {
                     aeropuertosPrivadosDao.borrarAeropuertoPrivado(id);
                     aeropuertosDao.borrarAeropuerto(nombre, anioInauguracion, capacidad, direccion);
 
-                } else{
+                } else {
                     String pais = aeropuertoPublicoSeleccionado.getPais();
                     String ciudad = aeropuertoPublicoSeleccionado.getCiudad();
                     String calle = aeropuertoPublicoSeleccionado.getCalle();
@@ -205,20 +242,34 @@ public class L_ListadoAeropuertosController {
                 }
 
                 //Mensaje de alerta
-                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha BORRADO del aeropuerto", "INFO");
+                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "INFO", "Se ha BORRADO del aeropuerto");
                 alerta.show();
-            }else {
-                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "Se ha cancelado el BORRADO del aeropuerto", "INFO");
+            } else {
+                Alert alerta = generarVentana(Alert.AlertType.INFORMATION, "INFO", "Se ha cancelado el BORRADO del aeropuerto");
                 alerta.show();
             }
         }
     }
 
+    /**
+     * Metodo que se ejecuta al pulsar el botón para borrar un avión.
+     * Abre la ventana para borrar un avión.
+     *
+     * @param event El evento de acción generado al pulsar el botón.
+     */
     @FXML
     void borrarAviones(ActionEvent event) {
         new L_BorrarAvion();
     }
 
+
+    /**
+     * Metodo que se ejecuta al pulsar el botón para editar un aeropuerto.
+     * Verifica si se ha seleccionado un aeropuerto en las tablas correspondientes
+     * y abre la ventana de edición para el aeropuerto seleccionado.
+     *
+     * @param event El evento de acción generado al pulsar el botón.
+     */
     @FXML
     void editarAeropuerto(ActionEvent event) {
         // Verificar si se seleccionó una fila en la tabla de aeropuertos privados
@@ -267,6 +318,16 @@ public class L_ListadoAeropuertosController {
         }
     }
 
+
+    /**
+     * Muestra información detallada del aeropuerto seleccionado en las tablas
+     * de aeropuertos privados o públicos. Si no se selecciona ningún aeropuerto,
+     * se genera una alerta de error. Si se selecciona un aeropuerto, se
+     * recopila información sobre su ubicación, año de inauguración, capacidad,
+     * y los aviones asociados, presentando la información en una alerta.
+     *
+     * @param event El evento de acción que se produce al invocar este método.
+     */
     @FXML
     void mostrarAeropuerto(ActionEvent event) {
         //Verificar si se seleccionó una fila en la tabla de aeropuertos privados
@@ -276,14 +337,14 @@ public class L_ListadoAeropuertosController {
         InformacionAeropuertosPublicos aeropuertoPublicoSeleccionado = tvAeropuertosPublicos.getSelectionModel().getSelectedItem();
 
         //Validar que se ha seleccionado un aeropuerto
-        if(aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
-            Alert alerta = generarVentana(Alert.AlertType.ERROR, "No se ha seleccionado ningún aeropuerto", "ERROR");
+        if (aeropuertoPrivadoSeleccionado == null && aeropuertoPublicoSeleccionado == null) {
+            Alert alerta = generarVentana(Alert.AlertType.ERROR, "ERROR", "No se ha seleccionado ningún aeropuerto");
             alerta.show();
-        }else{
+        } else {
             //Declarar variables
             String pais, ciudad, calle, nombre;
-            int numero, anioInauguracion, capacidad, numSocios=0, numTrabajadores=0, id;
-            float financiacion=0;
+            int numero, anioInauguracion, capacidad, numSocios = 0, numTrabajadores = 0, id;
+            float financiacion = 0;
 
             //Cargar variables
             if (aeropuertoPrivadoSeleccionado != null) {
@@ -296,7 +357,7 @@ public class L_ListadoAeropuertosController {
                 capacidad = aeropuertoPrivadoSeleccionado.getCapacidad();
                 numSocios = aeropuertoPrivadoSeleccionado.getNumeroSocios();
                 id = aeropuertoPrivadoSeleccionado.getId();
-            } else{
+            } else {
                 pais = aeropuertoPublicoSeleccionado.getPais();
                 ciudad = aeropuertoPublicoSeleccionado.getCiudad();
                 calle = aeropuertoPublicoSeleccionado.getCalle();
@@ -310,24 +371,24 @@ public class L_ListadoAeropuertosController {
             }
 
             //Generar información dirección y aeropuertos
-            String informacion = "Nombre: "+nombre+"\nPaís: "+pais+"\nDirección: C/"+calle+" "+numero+", "+ciudad+"\nAño de inauguración: "+anioInauguracion+"\nCapacidad: "+capacidad+"\nAviones:\n";
+            String informacion = "Nombre: " + nombre + "\nPaís: " + pais + "\nDirección: C/" + calle + " " + numero + ", " + ciudad + "\nAño de inauguración: " + anioInauguracion + "\nCapacidad: " + capacidad + "\nAviones:\n";
 
             //Generar información aviones
             ObservableList<Aviones> aviones = avionesDao.dameAvionesPorAeropuerto(id);
-            if(aviones.size()==0) {
-                informacion+="\tNO TIENE AVIONES\n";
-            }else {
-                for(Aviones avion:aviones) {
+            if (aviones.size() == 0) {
+                informacion += "\tNO TIENE AVIONES\n";
+            } else {
+                for (Aviones avion : aviones) {
                     String estado = (avion.getActivado() == 1) ? "Activado" : "Desactivado";
-                    informacion+="\tModelo: "+avion.getModelo()+"\n\tNúmero de asientos: "+avion.getNumeroAsientos()+"\n\tVelocidad Máxima: "+avion.getVelocidadMaxima()+"\n\t"+estado+"\n";
+                    informacion += "\tModelo: " + avion.getModelo() + "\n\tNúmero de asientos: " + avion.getNumeroAsientos() + "\n\tVelocidad Máxima: " + avion.getVelocidadMaxima() + "\n\t" + estado + "\n";
                 }
             }
 
             //Generar información público o privado
-            if(aeropuertoPrivadoSeleccionado==null) {
-                informacion+="Público\nFinanciación: "+financiacion+"\nNúmero de trabajadores: "+numTrabajadores;
-            }else {
-                informacion+="Privado\nNúmero de Socios: "+numSocios;
+            if (aeropuertoPrivadoSeleccionado == null) {
+                informacion += "Público\nFinanciación: " + financiacion + "\nNúmero de trabajadores: " + numTrabajadores;
+            } else {
+                informacion += "Privado\nNúmero de Socios: " + numSocios;
             }
 
             Alert alerta = generarVentana(Alert.AlertType.INFORMATION, informacion, "INFO");
@@ -335,7 +396,14 @@ public class L_ListadoAeropuertosController {
         }
     }
 
-    /** GENERAR VENTANA DE ALERTA */
+    /**
+     * Genera una ventana de alerta con el tipo de alerta, mensaje y título especificados.
+     *
+     * @param tipoDeAlerta El tipo de alerta a generar.
+     * @param mensaje      El mensaje que se mostrará en la alerta.
+     * @param title        El título de la alerta.
+     * @return La alerta generada.
+     */
     private Alert generarVentana(Alert.AlertType tipoDeAlerta, String mensaje, String title) {
         Alert alerta = new Alert(tipoDeAlerta);
         alerta.setContentText(mensaje);
@@ -344,23 +412,34 @@ public class L_ListadoAeropuertosController {
         return alerta;
     }
 
+    /**
+     * Inicializa los componentes y datos necesarios para la interfaz de usuario.
+     * Se cargan las instancias de los DAOs y se configuran las tablas de
+     * aeropuertos públicos y privados con los datos existentes.
+     */
     @FXML
     void initialize() {
         aeropuertosDao = new AeropuertosDao();
         direccionesDao = new DireccionesDao();
         avionesDao = new AvionesDao();
 
-        //Cargar instancias de aeropuertos
+        // Cargar instancias de aeropuertos
         aeropuertosPrivadosDao = new AeropuertosPrivadosDao();
         aeropuertosPublicosDao = new AeropuertosPublicosDao();
 
-        //Instanciar listas observables y cargarlas
+        // Instanciar listas observables y cargarlas
         aeropuertosPrivadosExistentes = FXCollections.observableArrayList();
         aeropuertosPublicosExistentes = FXCollections.observableArrayList();
 
         aeropuertosPrivadosExistentes.setAll(aeropuertosPrivadosDao.cargarAeropuertosPrivados());
         aeropuertosPublicosExistentes.setAll(aeropuertosPublicosDao.cargarAeropuertosPublicos());
 
+        // Llamar al método de configuración
+        configurarTablasYFiltrado();
+    }
+
+
+    private void configurarTablasYFiltrado() {
         // Configuración de las columnas de la tabla de aeropuertos públicos
         colIDPublico.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombrePublico.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -384,12 +463,21 @@ public class L_ListadoAeropuertosController {
         colNSociosPrivado.setCellValueFactory(new PropertyValueFactory<>("numeroSocios"));
         colAnioPrivado.setCellValueFactory(new PropertyValueFactory<>("anioInauguracion"));
 
+        // Asignar las listas observables a las tablas
         tvAeropuertosPrivados.setItems(aeropuertosPrivadosExistentes);
         tvAeropuertosPublicos.setItems(aeropuertosPublicosExistentes);
+
+        tvAeropuertosPrivados.refresh();
+        tvAeropuertosPublicos.refresh();
+
         // Llamar al método de filtrado
         configurarFiltradoAeropuertos();
     }
 
+    /**
+     * Configura el filtrado de los aeropuertos en las tablas de aeropuertos
+     * privados y públicos. Permite buscar por nombre, ciudad o país.
+     */
     private void configurarFiltradoAeropuertos() {
         // Filtrado para aeropuertos privados
         FilteredList<InformacionAeropuertosPrivados> filteredPrivados = new FilteredList<>(aeropuertosPrivadosExistentes, b -> true);

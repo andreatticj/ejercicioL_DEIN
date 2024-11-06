@@ -45,7 +45,7 @@ public class L_ActivarDesactivarAvionController {
     private ObservableList<Aviones> elementosComboAviones;
 
     /**
-     * Método de inicialización llamado automáticamente al cargar la vista.
+     * Metodo de inicialización llamado automáticamente al cargar la vista.
      * Configura los ComboBoxes de aeropuertos y aviones, y agrega listeners para actualizar el estado.
      */
     @FXML

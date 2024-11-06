@@ -36,15 +36,30 @@ public class L_AddAvionController {
     private TextField txtModelo;
 
     @FXML
-    private Label txtVelMax;
+    private TextField txtVelMax;
+
+    @FXML
+    private RadioButton rbPrivado;
+
+    @FXML
+    private RadioButton rbPublico;
 
     private AeropuertosDao aeropuertosDao;
     private AvionesDao avionesDao;
 
     private ObservableList<Aeropuertos> elementosCombo;
 
+    // Metodo de inicialización de los componentes
+    @FXML
+    public void initialize() {
+        aeropuertosDao = new AeropuertosDao();
+        // Cargar aeropuertos al inicio con la opción predeterminada seleccionada
+        cargarAeropuertosPublicos();
+
+    }
+
     /**
-     * Método que se ejecuta al hacer clic en el botón de cancelar.
+     * Metodo que se ejecuta al hacer clic en el botón de cancelar.
      * Cierra la ventana modal.
      *
      * @param event El evento de acción.
@@ -56,7 +71,7 @@ public class L_AddAvionController {
     }
 
     /**
-     * Método que se ejecuta al hacer clic en el botón de guardar.
+     * Metodo que se ejecuta al hacer clic en el botón de guardar.
      * Valida los datos ingresados y, si son correctos,
      * inserta un nuevo avión en la base de datos.
      *
@@ -76,7 +91,7 @@ public class L_AddAvionController {
         } else {
             // Validar que no existe el modelo en el aeropuerto.
             Aeropuertos aeropuertoSeleccionado = cmbAeropuerto.getSelectionModel().getSelectedItem();
-            int idAeropuerto = aeropuertosDao.dameIdDeAeropuerto(aeropuertoSeleccionado.getNombre(), aeropuertoSeleccionado.getAnioInauguracion(), aeropuertoSeleccionado.getCapacidad(), aeropuertoSeleccionado.getId_direccion());
+            int idAeropuerto = aeropuertosDao.dameIdDeAeropuerto(aeropuertoSeleccionado.getNombre(), aeropuertoSeleccionado.getAnioInaguracion(), aeropuertoSeleccionado.getCapacidad(), aeropuertoSeleccionado.getId_direccion());
             boolean existeModelo = avionesDao.existeModeloEnAeropuerto(txtModelo.getText(), idAeropuerto);
 
             if (existeModelo) {
@@ -171,7 +186,37 @@ public class L_AddAvionController {
         txtVelMax.setText("");
         rbActivado.setSelected(false);
         rbDesactivado.setSelected(false);
-        cmbAeropuerto.setValue(elementosCombo.get(0));
+        cmbAeropuerto.setValue(elementosCombo.get(0));  // Volver a seleccionar el primer aeropuerto
     }
+
+    /**
+     * Metodo que se ejecuta al seleccionar el tipo de aeropuerto (Público o Privado).
+     * Carga los aeropuertos correspondientes en el ComboBox.
+     */
+    @FXML
+    private void actualizarComboAeropuerto() {
+        if (rbPrivado.isSelected()) {
+            cargarAeropuertosPrivados();
+        } else if (rbPublico.isSelected()) {
+            cargarAeropuertosPublicos();
+        }
+    }
+
+    /**
+     * Carga los aeropuertos privados en el ComboBox.
+     */
+    private void cargarAeropuertosPrivados() {
+        elementosCombo = aeropuertosDao.cargarAeropuertos();
+        cmbAeropuerto.setItems(elementosCombo);
+    }
+
+    /**
+     * Carga los aeropuertos públicos en el ComboBox.
+     */
+    private void cargarAeropuertosPublicos() {
+        elementosCombo = aeropuertosDao.cargarAeropuertos();
+        cmbAeropuerto.setItems(elementosCombo);
+    }
+
 
 }
