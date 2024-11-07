@@ -53,6 +53,7 @@ public class L_AddAvionController {
     @FXML
     public void initialize() {
         aeropuertosDao = new AeropuertosDao();
+        avionesDao = new AvionesDao();
         // Cargar aeropuertos al inicio con la opción predeterminada seleccionada
         cargarAeropuertosPublicos();
 
@@ -79,6 +80,7 @@ public class L_AddAvionController {
      */
     @FXML
     void actGuardarAviones(ActionEvent event) {
+
         String errores = validarDatos();
 
         if (errores.length() != 0) {
@@ -91,8 +93,11 @@ public class L_AddAvionController {
         } else {
             // Validar que no existe el modelo en el aeropuerto.
             Aeropuertos aeropuertoSeleccionado = cmbAeropuerto.getSelectionModel().getSelectedItem();
+
             int idAeropuerto = aeropuertosDao.dameIdDeAeropuerto(aeropuertoSeleccionado.getNombre(), aeropuertoSeleccionado.getAnioInaguracion(), aeropuertoSeleccionado.getCapacidad(), aeropuertoSeleccionado.getId_direccion());
+
             boolean existeModelo = avionesDao.existeModeloEnAeropuerto(txtModelo.getText(), idAeropuerto);
+            System.out.println("hola.------");
 
             if (existeModelo) {
                 // Mensaje de alerta si el modelo ya existe en el aeropuerto.
@@ -100,6 +105,7 @@ public class L_AddAvionController {
                 alerta.show();
             } else {
                 int activado = rbActivado.isSelected() ? 1 : 0;
+                System.out.println(txtModelo.getText()+","+ Integer.parseInt(txtAsientos.getText())+","+ Float.parseFloat(txtVelMax.getText())+","+ activado+","+ idAeropuerto);
                 avionesDao.insertarAvion(txtModelo.getText(), Integer.parseInt(txtAsientos.getText()), Float.parseFloat(txtVelMax.getText()), activado, idAeropuerto);
 
                 // Mensaje de alerta de éxito.

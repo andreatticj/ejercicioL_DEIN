@@ -28,7 +28,7 @@ public class ConexionBD {
         String user = Propiedades.getValor("user");
         String password = Propiedades.getValor("password");
 
-        System.out.println("Conectando a la base de datos con URL: " + url + ", Usuario: " + user);
+        //System.out.println("Conectando a la base de datos con URL: " + url + ", Usuario: " + user);
         conexion = DriverManager.getConnection(url, user, password);
         conexion.setAutoCommit(true);
     }

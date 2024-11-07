@@ -172,6 +172,7 @@ public class L_ListadoAeropuertosController {
     @FXML
     void aniadirAeropuerto(ActionEvent event) {
         new L_AddAeropuerto();
+        configurarTablasYFiltrado();
     }
 
 
@@ -249,6 +250,7 @@ public class L_ListadoAeropuertosController {
                 alerta.show();
             }
         }
+        configurarTablasYFiltrado();
     }
 
     /**
@@ -316,6 +318,7 @@ public class L_ListadoAeropuertosController {
                 L_EditarAeropuerto ventanaEditar = new L_EditarAeropuerto(nombre, pais, ciudad, calle, numero, anioInauguracion, capacidad, true, false, 0, financiacion, numTrabajadores, direccion, id);
             }
         }
+        configurarTablasYFiltrado();
     }
 
 
@@ -467,10 +470,7 @@ public class L_ListadoAeropuertosController {
         tvAeropuertosPrivados.setItems(aeropuertosPrivadosExistentes);
         tvAeropuertosPublicos.setItems(aeropuertosPublicosExistentes);
 
-        tvAeropuertosPrivados.refresh();
-        tvAeropuertosPublicos.refresh();
-
-        // Llamar al método de filtrado
+        // Llamar al metodo de filtrado
         configurarFiltradoAeropuertos();
     }
 
