@@ -38,25 +38,22 @@ public class L_AddAvionController {
     @FXML
     private TextField txtVelMax;
 
-    @FXML
-    private RadioButton rbPrivado;
-
-    @FXML
-    private RadioButton rbPublico;
 
     private AeropuertosDao aeropuertosDao;
     private AvionesDao avionesDao;
 
     private ObservableList<Aeropuertos> elementosCombo;
 
-    // Metodo de inicialización de los componentes
+    /** Metodo de inicialización de los componentes */
     @FXML
     public void initialize() {
         aeropuertosDao = new AeropuertosDao();
         avionesDao = new AvionesDao();
-        // Cargar aeropuertos al inicio con la opción predeterminada seleccionada
-        cargarAeropuertosPublicos();
 
+        //Cargar combo
+        elementosCombo = aeropuertosDao.cargarAeropuertos();
+        cmbAeropuerto.setItems(elementosCombo);
+        cmbAeropuerto.setValue(elementosCombo.get(0));
     }
 
     /**
@@ -194,35 +191,5 @@ public class L_AddAvionController {
         rbDesactivado.setSelected(false);
         cmbAeropuerto.setValue(elementosCombo.get(0));  // Volver a seleccionar el primer aeropuerto
     }
-
-    /**
-     * Metodo que se ejecuta al seleccionar el tipo de aeropuerto (Público o Privado).
-     * Carga los aeropuertos correspondientes en el ComboBox.
-     */
-    @FXML
-    private void actualizarComboAeropuerto() {
-        if (rbPrivado.isSelected()) {
-            cargarAeropuertosPrivados();
-        } else if (rbPublico.isSelected()) {
-            cargarAeropuertosPublicos();
-        }
-    }
-
-    /**
-     * Carga los aeropuertos privados en el ComboBox.
-     */
-    private void cargarAeropuertosPrivados() {
-        elementosCombo = aeropuertosDao.cargarAeropuertos();
-        cmbAeropuerto.setItems(elementosCombo);
-    }
-
-    /**
-     * Carga los aeropuertos públicos en el ComboBox.
-     */
-    private void cargarAeropuertosPublicos() {
-        elementosCombo = aeropuertosDao.cargarAeropuertos();
-        cmbAeropuerto.setItems(elementosCombo);
-    }
-
 
 }

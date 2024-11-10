@@ -7,10 +7,7 @@ import eu.andreatt.ejerciciol_dein.model.Aviones;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 /**
@@ -37,6 +34,9 @@ public class L_ActivarDesactivarAvionController {
 
     @FXML
     private RadioButton rbDesactivado;
+
+    @FXML
+    private ToggleGroup grpRadioBtn;
 
     private AeropuertosDao aeropuertosDao;
     private AvionesDao avionesDao;
