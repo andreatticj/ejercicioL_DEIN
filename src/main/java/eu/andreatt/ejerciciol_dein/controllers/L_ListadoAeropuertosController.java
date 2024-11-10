@@ -172,7 +172,8 @@ public class L_ListadoAeropuertosController {
     @FXML
     void aniadirAeropuerto(ActionEvent event) {
         new L_AddAeropuerto();
-        configurarTablasYFiltrado();
+        aeropuertosPrivadosExistentes.setAll(aeropuertosPrivadosDao.cargarAeropuertosPrivados());
+        aeropuertosPublicosExistentes.setAll(aeropuertosPublicosDao.cargarAeropuertosPublicos());
     }
 
 
@@ -250,7 +251,8 @@ public class L_ListadoAeropuertosController {
                 alerta.show();
             }
         }
-        configurarTablasYFiltrado();
+        aeropuertosPrivadosExistentes.setAll(aeropuertosPrivadosDao.cargarAeropuertosPrivados());
+        aeropuertosPublicosExistentes.setAll(aeropuertosPublicosDao.cargarAeropuertosPublicos());
     }
 
     /**
@@ -318,7 +320,8 @@ public class L_ListadoAeropuertosController {
                 L_EditarAeropuerto ventanaEditar = new L_EditarAeropuerto(nombre, pais, ciudad, calle, numero, anioInauguracion, capacidad, true, false, 0, financiacion, numTrabajadores, direccion, id);
             }
         }
-        configurarTablasYFiltrado();
+        aeropuertosPrivadosExistentes.setAll(aeropuertosPrivadosDao.cargarAeropuertosPrivados());
+        aeropuertosPublicosExistentes.setAll(aeropuertosPublicosDao.cargarAeropuertosPublicos());
     }
 
 
