@@ -138,7 +138,7 @@ public class L_EditAeropuertoController {
         if (isPrivadoSelected) {
             aeropuertosPrivadosDao.actualizarAeropuertoPrivado(idAeropuerto, Integer.parseInt(txtSocios.getText()));
         } else {
-            aeropuertosPublicosDao.actualizarAeropuertoPublico(idAeropuerto, Float.parseFloat(txtFinanciacion.getText()), Integer.parseInt(txtNumTrabajadores.getText()));
+            aeropuertosPublicosDao.actualizarAeropuertoPublico(idAeropuerto, Double.parseDouble(txtFinanciacion.getText()), Integer.parseInt(txtNumTrabajadores.getText()));
         }
 
         // Mostrar información

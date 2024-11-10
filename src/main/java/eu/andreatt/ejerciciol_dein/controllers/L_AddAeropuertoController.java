@@ -154,7 +154,7 @@ public class L_AddAeropuertoController {
             int capacidad = Integer.parseInt(txtCapaciad.getText());
             int numTrabajadores = rbPublico.isSelected() ? Integer.parseInt(txtNumTrabajadores.getText()) : 0;
             int socios = rbPrivado.isSelected() ? Integer.parseInt(txtSocios.getText()) : 0;
-            float financiacion = rbPublico.isSelected() ? Float.parseFloat(txtFinanciacion.getText()) : 0;
+            double financiacion = rbPublico.isSelected() ? Double.parseDouble(txtFinanciacion.getText()) : 0;
 
             // Inicializar DAOs
             aeropuertosDao = new AeropuertosDao();

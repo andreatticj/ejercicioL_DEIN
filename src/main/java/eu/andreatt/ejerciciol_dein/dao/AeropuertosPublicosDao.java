@@ -60,14 +60,14 @@ public class AeropuertosPublicosDao {
 	 * @param numTrabajadores El número de trabajadores del aeropuerto público.
 	 * @return true si la inserción fue exitosa, false en caso contrario.
 	 */
-	public boolean insertarAeropuertoPublico(int idAeropuerto, float financiacion, int numTrabajadores) {
+	public boolean insertarAeropuertoPublico(int idAeropuerto, double financiacion, int numTrabajadores) {
 		try {
 			conexion = new ConexionBD();
 			String consulta = "INSERT INTO aeropuertos_publicos (id_aeropuerto, financiacion, num_trabajadores) VALUES (?, ?, ?)";
 
 			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
 			pstmt.setInt(1, idAeropuerto);
-			pstmt.setFloat(2, financiacion);
+			pstmt.setDouble(2, financiacion);
 			pstmt.setInt(3, numTrabajadores);
 
 			pstmt.executeUpdate();
@@ -117,13 +117,13 @@ public class AeropuertosPublicosDao {
 	 * @param numTrabajadores El nuevo número de trabajadores del aeropuerto público.
 	 * @return true si la actualización fue exitosa, false en caso contrario.
 	 */
-	public boolean actualizarAeropuertoPublico(int idAeropuerto, float financiacion, int numTrabajadores) {
+	public boolean actualizarAeropuertoPublico(int idAeropuerto, double financiacion, int numTrabajadores) {
 		try {
 			conexion = new ConexionBD();
 			String consulta = "UPDATE aeropuertos_publicos SET financiacion = ?, num_trabajadores = ? WHERE id_aeropuerto = ?";
 
 			PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);
-			pstmt.setFloat(1, financiacion);
+			pstmt.setDouble(1, financiacion);
 			pstmt.setInt(2, numTrabajadores);
 			pstmt.setInt(3, idAeropuerto);
 

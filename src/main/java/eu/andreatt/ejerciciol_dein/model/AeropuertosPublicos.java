@@ -16,7 +16,7 @@ public class AeropuertosPublicos {
 	private int numTrabajadores;
 
 	/** Cantidad de financiación que recibe el aeropuerto público. */
-	private float financiacion;
+	private double financiacion;
 
 	/**
 	 * Constructor que inicializa un objeto AeropuertosPublicos con los parámetros especificados.
@@ -25,7 +25,7 @@ public class AeropuertosPublicos {
 	 * @param financiacion Cantidad de financiación asignada al aeropuerto público.
 	 * @param numTrabajadores Número de trabajadores que emplea el aeropuerto público.
 	 */
-	public AeropuertosPublicos(int idAeropuerto, float financiacion, int numTrabajadores) {
+	public AeropuertosPublicos(int idAeropuerto, double financiacion, int numTrabajadores) {
 		this.idAeropuerto = idAeropuerto;
 		this.financiacion = financiacion;
 		this.numTrabajadores = numTrabajadores;
@@ -72,7 +72,7 @@ public class AeropuertosPublicos {
 	 *
 	 * @return financiacion La cantidad de financiación asignada al aeropuerto público.
 	 */
-	public float getFinanciacion() {
+	public double getFinanciacion() {
 		return financiacion;
 	}
 
@@ -110,7 +110,7 @@ public class AeropuertosPublicos {
 		if (getClass() != obj.getClass())
 			return false;
 		AeropuertosPublicos other = (AeropuertosPublicos) obj;
-		return Float.floatToIntBits(financiacion) == Float.floatToIntBits(other.financiacion)
+		return Double.doubleToLongBits(financiacion) == Double.doubleToLongBits(other.financiacion)
 				&& idAeropuerto == other.idAeropuerto && numTrabajadores == other.numTrabajadores;
 	}
 }
