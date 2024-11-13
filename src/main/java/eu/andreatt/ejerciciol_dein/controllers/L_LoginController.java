@@ -3,6 +3,7 @@ package eu.andreatt.ejerciciol_dein.controllers;
 import eu.andreatt.ejerciciol_dein.application.L_ListadoAeropuertos;
 import eu.andreatt.ejerciciol_dein.dao.UsuariosDAO;
 import eu.andreatt.ejerciciol_dein.model.Usuarios;
+import eu.andreatt.ejerciciol_dein.bbdd.ConexionBD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -30,10 +31,15 @@ public class L_LoginController {
      * Maneja el evento de clic en el botón de inicio de sesión.
      * Valida las entradas del usuario y verifica las credenciales en la base de datos.
      *
-     * @param event El evento de acción que desencadena este método.
+     * @param event El evento de acción que desencadena este metodo.
      */
     @FXML
     void login(ActionEvent event) {
+        // Verificar si la conexión con la base de datos está disponible
+        if (!verificarConexionBD()) {
+            return;  // Evitar continuar si no hay conexión
+        }
+
         // Obtener los valores ingresados
         String usuario = txtUser.getText().trim();
         String password = txtPassw.getText().trim();
@@ -60,6 +66,17 @@ public class L_LoginController {
                 mostrarAlerta("El usuario o la contraseña son incorrectos", Alert.AlertType.ERROR);
             }
         }
+    }
+
+    /**
+     * Verifica si la conexión con la base de datos está disponible.
+     * Si no está disponible, muestra una alerta y evita el inicio de sesión.
+     *
+     * @return true si la base de datos está accesible, false si no lo está.
+     */
+    private boolean verificarConexionBD() {
+        ConexionBD conexionBD = new ConexionBD();
+        return conexionBD.verificarConexion();  // Usamos el metodo de ConexionBD
     }
 
     /**
