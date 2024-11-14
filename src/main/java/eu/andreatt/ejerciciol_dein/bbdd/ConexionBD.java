@@ -31,7 +31,7 @@ public class ConexionBD {
             conexion = DriverManager.getConnection(url, user, password);
             conexion.setAutoCommit(true);
         } catch (SQLException e) {
-            mostrarAlerta("Error: No se pudo establecer la conexión con la base de datos.\nVerifique los parámetros de conexión.", Alert.AlertType.ERROR);
+            mostrarAlerta("Error: No se pudo establecer la conexión con la base de datos.", Alert.AlertType.ERROR);
         }
     }
 
